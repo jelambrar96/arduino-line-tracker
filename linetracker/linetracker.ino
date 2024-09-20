@@ -3,6 +3,8 @@
 #include "QTRSensors.h"
 #include "controler.h"
 
+#define USE_SERIAL 0
+
 #define NUM_SENSORS             8  // number of sensors used
 #define NUM_SAMPLES_PER_SENSOR  4  // average 4 analog samples per sensor reading
 #define EMITTER_PIN             9  // emitter is controlled by digital pin 2
@@ -33,6 +35,7 @@ void setup() {
     digitalWrite(13, LOW);     // turn off Arduino's LED to indicate we are through with calibration
 
     // print the calibration minimum values measured when emitters were on
+#if USE_SERIAL
     Serial.begin(9600);
     for (int i = 0; i < NUM_SENSORS; i++) {
         Serial.print(qtra.calibratedMinimumOn[i]);
@@ -47,6 +50,7 @@ void setup() {
     }
     Serial.println();
     Serial.println();
+#endif
     delay(1000);
 }
 
@@ -66,12 +70,16 @@ void loop() {
             max_sensor_position = sensorValues[i];
         }
         sumatoria += weights_average[i] * sensorValues[i];
-        // Serial.print(sensorValues[i]);
-        // Serial.print('\t');
+#if USE_SERIAL
+        Serial.print(sensorValues[i]);
+        Serial.print('\t');
     }
     //Serial.println(); // uncomment this line if you are using raw values
     Serial.println(position); // comment this line out if you are using raw values
-    
+#else
+    }
+#endif
+
     int angulo_salida = servo_controler.control(sumatoria, 0, 0);
     unsigned char angulo_servo = angulo_salida + 90;
 
