@@ -1,7 +1,9 @@
+#include <Arduino.h>
 #include <Servo.h>
 
 #include "QTRSensors.h"
 #include "controler.h"
+#include "motors.h"
 
 #define USE_SERIAL 0
 
