@@ -76,10 +76,10 @@ void loop() {
     unsigned char angulo_servo = angulo_salida + 90;
 
     while(servo_position > angulo_servo) {
-        myservo.wirte(--servo_position);
+        myservo.write(--servo_position);
     }
     while(servo_position < angulo_servo) {
-        myservo.wirte(++servo_position);
+        myservo.write(++servo_position);
     }
     // myservo.write(angulo_servo);
 
