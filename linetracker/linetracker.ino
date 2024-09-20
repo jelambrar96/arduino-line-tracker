@@ -15,14 +15,15 @@ int weights_average[] = {-7, -5, -3, -1, 1, 3, 5, 7};
 
 PServoControler servo_controler;
 Servo myservo;
-
+unsigned char servo_position = 90;
 
 void setup() {
 
+    myservo.attach(10);
+    myservo.write(servo_position);
+
     delay(500);
     pinMode(13, OUTPUT);
-    myservo.attach(10);
-
     // make the calibration take about 10 seconds
     // turn on Arduino's LED to indicate we are in calibration mode
     digitalWrite(13, HIGH);
@@ -74,7 +75,13 @@ void loop() {
     int angulo_salida = servo_controler.control(sumatoria, 0, 0);
     unsigned char angulo_servo = angulo_salida + 90;
 
-    myservo.write(angulo_servo);
+    while(servo_position > angulo_servo) {
+        myservo.wirte(--servo_position);
+    }
+    while(servo_position < angulo_servo) {
+        myservo.wirte(++servo_position);
+    }
+    // myservo.write(angulo_servo);
 
 }
 
