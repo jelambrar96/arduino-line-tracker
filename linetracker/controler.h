@@ -7,7 +7,7 @@ public:
     virtual unsigned char control(unsigned int v0, unsigned int v1, unsigned int v2) = 0;
 };
 
-class PServoControler: Controler {
+class PServoControler: public Controler {
 public:
     virtual unsigned char control(unsigned int v0, unsigned int v1, unsigned int v2);
 private:

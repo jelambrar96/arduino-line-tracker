@@ -1,6 +1,7 @@
+#include <Servo.h>
+
 #include "QTRSensors.h"
-#include "controler.h
-#include <servo.h>
+#include "controler.h"
 
 #define NUM_SENSORS             8  // number of sensors used
 #define NUM_SAMPLES_PER_SENSOR  4  // average 4 analog samples per sensor reading
@@ -12,7 +13,7 @@ QTRSensorsAnalog qtra((unsigned char[]) {7, 6, 5, 4, 3, 2, 1, 0}, NUM_SENSORS, N
 unsigned int sensorValues[NUM_SENSORS];
 int weights_average[] = {-7, -5, -3, -1, 1, 3, 5, 7};
 
-PServoControler servo_controler();
+PServoControler servo_controler;
 Servo myservo;
 
 
