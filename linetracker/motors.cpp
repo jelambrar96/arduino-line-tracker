@@ -11,6 +11,10 @@ Motor::Motor(unsigned char enA, unsigned char in1, char in2) {
 
 Motor::~Motor() {}
 
+unsigned int Motor::setSpeed() {
+    return speed;
+}
+
 void Motor::setSpeed(unsigned int spd) {
     speed = spd;
 }

@@ -7,6 +7,7 @@ class Motor {
 public:
     Motor(unsigned char enA, unsigned char in1, char in2);
     ~Motor();
+    unsigned int getSpeed();
     void setSpeed(unsigned int spd);
     void forward();
     void backward();
