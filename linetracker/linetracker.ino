@@ -6,16 +6,22 @@
 #include "motors.h"
 
 #define USE_SERIAL 0
+#define DEBUG_MODE 0
 
 #define NUM_SENSORS             8  // number of sensors used
 #define NUM_SAMPLES_PER_SENSOR  4  // average 4 analog samples per sensor reading
 #define EMITTER_PIN             9  // emitter is controlled by digital pin 2
+
+#define SERVO_PIN 11
+
 
 // sensors 0 through 5 are connected to analog inputs 0 through 5, respectively
 QTRSensorsAnalog qtra((unsigned char[]) {7, 6, 5, 4, 3, 2, 1, 0}, NUM_SENSORS, NUM_SAMPLES_PER_SENSOR, EMITTER_PIN);
 
 unsigned int sensorValues[NUM_SENSORS];
 int weights_average[] = {-7, -5, -3, -1, 1, 3, 5, 7};
+unsigned char ANGLE_LKTABLE[] = {137, 120, 113, 104, 95, 85, 76, 67, 60, 53};
+
 
 PServoControler servo_controler;
 Servo myservo;
@@ -23,7 +29,7 @@ unsigned char servo_position = 90;
 
 void setup() {
 
-    myservo.attach(10);
+    myservo.attach(SERVO_PIN);
     myservo.write(servo_position);
 
     delay(500);
@@ -64,12 +70,12 @@ void loop() {
     // 1000 means minimum reflectance, followed by the line position
 
     unsigned int max_sensor_values = 0;
-    unsigned char max_sensor_position = 0;
+    unsigned char max_sensor_position = NUM_SENSORS / 2;
     int sumatoria = 0;
     for (unsigned char i = 0; i < NUM_SENSORS; i++) {
         if (sensorValues[i] > max_sensor_values) {
-            max_sensor_position = 0;
-            max_sensor_position = sensorValues[i];
+            max_sensor_position = i;
+            max_sensor_values = sensorValues[i];
         }
         sumatoria += weights_average[i] * sensorValues[i];
 #if USE_SERIAL
@@ -78,20 +84,45 @@ void loop() {
     }
     //Serial.println(); // uncomment this line if you are using raw values
     Serial.println(position); // comment this line out if you are using raw values
+    Serial.print("sumatoria: ");
+    Serial.println(sumatoria);
+
 #else
     }
 #endif
 
-    int angulo_salida = servo_controler.control(sumatoria, 0, 0);
-    unsigned char angulo_servo = angulo_salida + 90;
+    // int angulo_salida = servo_controler.control(max_sensor_position, 0, 0);
+    unsigned char angulo_salida = ANGLE_LKTABLE[max_sensor_position];
+    unsigned char angulo_servo = angulo_salida;
+
+#if USE_SERIAL
+    Serial.print("angulo salida: ");
+    Serial.println(angulo_salida);
+
+    Serial.print("servo_position: ");
+    Serial.println(servo_position);
+#endif 
 
     while(servo_position > angulo_servo) {
+        // delay(10);
         myservo.write(--servo_position);
     }
     while(servo_position < angulo_servo) {
+        // delay(10);
         myservo.write(++servo_position);
     }
     // myservo.write(angulo_servo);
+
+#if DEBUG_MODE
+    delay(1000);
+#endif
+#if USE_SERIAL
+    // Serial.write(27);       // ESC command
+    // Serial.print("[2J");    // clear screen command
+    // Serial.write(27);
+    // Serial.print("[H");     // cursor to home command
+    // Serial.clear();
+#endif
 
 }
 
