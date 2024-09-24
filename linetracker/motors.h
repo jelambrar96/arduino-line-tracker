@@ -12,7 +12,7 @@ public:
     void forward();
     void backward();
 
-private:
+protected:
     unsigned int speed = 0;
     unsigned char enA;
     unsigned char in1;
